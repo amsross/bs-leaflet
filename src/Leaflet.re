@@ -1,4 +1,6 @@
 type tileLayer
+and renderer
+and crs
 and tooltip
 and layer
 and point = {
@@ -327,14 +329,14 @@ module Map = {
       ~boxZoom: bool=?,
       ~doubleClickZoom: bool=?,
       ~dragging: bool=?,
-      /* ~crs: cRS=?, */
+      ~crs: crs=?,
       ~center: latLng=?,
       ~zoom: int=?,
       ~minZoom: int=?,
       ~maxZoom: int=?,
-      /* ~layers: array(layer)=?, */
+      ~layers: array(layer)=?,
       ~maxBounds: latLngBounds=?,
-      /* ~renderer: renderer=?, */
+      ~renderer: renderer=?,
       ~inertia: bool=?,
       ~inertiaDeceleration: float=?,
       ~inertiaMaxSpeed: float=?,
