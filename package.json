@@ -3,6 +3,7 @@
   "dependencies": {
     "leaflet": "^1.6.0"
   },
+  "description": "Bucklescript bindings for Leaflet.js",
   "devDependencies": {
     "bs-platform": "^7.3.2",
     "semantic-release": "^17.0.8"
