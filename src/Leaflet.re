@@ -1,5 +1,22 @@
+type tileLayer
+and point = {
+  x: float,
+  y: float,
+}
+and latLng = {
+  lat: float,
+  lng: float,
+  alt: option(float),
+}
+and latLngBounds = (latLng, latLng)
+and map
+and bounds = {
+  min: point,
+  max: point,
+}
+and popup;
+
 module rec TileLayer: {
-  type t;
   type options;
 
   let options:
@@ -10,7 +27,7 @@ module rec TileLayer: {
       ~updateWhenZooming: bool=?,
       ~updateInterval: int=?,
       ~zIndex: int=?,
-      ~bounds: LatLngBounds.t=?,
+      ~bounds: latLngBounds=?,
       ~maxNativeZoom: int=?,
       ~minNativeZoom: int=?,
       ~noWrap: bool=?,
@@ -33,12 +50,11 @@ module rec TileLayer: {
     ) =>
     options;
 
-  let make: (string, options) => t;
-  let addTo: (t, Map.t) => t;
-  let remove: t => t;
-  let removeFrom: (t, Map.t) => t;
+  let make: (string, options) => tileLayer;
+  let addTo: (tileLayer, map) => tileLayer;
+  let remove: tileLayer => tileLayer;
+  let removeFrom: (tileLayer, map) => tileLayer;
 } = {
-  type t;
   type options;
 
   [@bs.obj]
@@ -50,7 +66,7 @@ module rec TileLayer: {
       ~updateWhenZooming: bool=?,
       ~updateInterval: int=?,
       ~zIndex: int=?,
-      ~bounds: LatLngBounds.t=?,
+      ~bounds: latLngBounds=?,
       ~maxNativeZoom: int=?,
       ~minNativeZoom: int=?,
       ~noWrap: bool=?,
@@ -73,82 +89,66 @@ module rec TileLayer: {
     ) =>
     options;
 
-  [@bs.module "leaflet"] external make: (string, options) => t = "tileLayer";
+  [@bs.module "leaflet"]
+  external make: (string, options) => tileLayer = "tileLayer";
 
-  [@bs.send] external addTo: (t, Map.t) => t = "addTo";
-  [@bs.send] external removeFrom: (t, Map.t) => t = "removeFrom";
-  [@bs.send] external remove: t => t = "remove";
+  [@bs.send] external addTo: (tileLayer, map) => tileLayer = "addTo";
+  [@bs.send] external removeFrom: (tileLayer, map) => tileLayer = "removeFrom";
+  [@bs.send] external remove: tileLayer => tileLayer = "remove";
 }
 
 and LatLngBounds: {
-  type t;
+  let make: (latLng, latLng) => latLngBounds;
+  let extend: latLng => latLngBounds;
+  let equals: latLngBounds => bool;
+  let toBBoxString: latLngBounds => string;
 
-  let make: (LatLng.t, LatLng.t) => t;
-  let extend: LatLng.t => t;
-  let equals: t => bool;
-  let toBBoxString: t => string;
-
-  let getCenter: t => LatLng.t;
-  let getSouthWest: t => LatLng.t;
-  let getNorthEast: t => LatLng.t;
-  let getNorthWest: t => LatLng.t;
-  let getSouthEast: t => LatLng.t;
-  let getWest: t => LatLng.t;
-  let getSouth: t => LatLng.t;
-  let getEast: t => LatLng.t;
-  let getNorth: t => LatLng.t;
+  let getCenter: latLngBounds => latLng;
+  let getSouthWest: latLngBounds => latLng;
+  let getNorthEast: latLngBounds => latLng;
+  let getNorthWest: latLngBounds => latLng;
+  let getSouthEast: latLngBounds => latLng;
+  let getWest: latLngBounds => latLng;
+  let getSouth: latLngBounds => latLng;
+  let getEast: latLngBounds => latLng;
+  let getNorth: latLngBounds => latLng;
 } = {
-  type t = (LatLng.t, LatLng.t);
-
   [@bs.module "leaflet"]
-  external make: (LatLng.t, LatLng.t) => t = "latLngBounds";
+  external make: (latLng, latLng) => latLngBounds = "latLngBounds";
 
-  [@bs.send] external extend: LatLng.t => t = "extend";
-  [@bs.send] external equals: t => bool = "equals";
-  [@bs.send] external toBBoxString: t => string = "toBBoxString";
+  [@bs.send] external extend: latLng => latLngBounds = "extend";
+  [@bs.send] external equals: latLngBounds => bool = "equals";
+  [@bs.send] external toBBoxString: latLngBounds => string = "toBBoxString";
 
-  [@bs.send] external getCenter: t => LatLng.t = "getCenter";
-  [@bs.send] external getSouthWest: t => LatLng.t = "getSouthWest";
-  [@bs.send] external getNorthEast: t => LatLng.t = "getNorthEast";
-  [@bs.send] external getNorthWest: t => LatLng.t = "getNorthWest";
-  [@bs.send] external getSouthEast: t => LatLng.t = "getSouthEast";
-  [@bs.send] external getWest: t => LatLng.t = "getWest";
-  [@bs.send] external getSouth: t => LatLng.t = "getSouth";
-  [@bs.send] external getEast: t => LatLng.t = "getEast";
-  [@bs.send] external getNorth: t => LatLng.t = "getNorth";
+  [@bs.send] external getCenter: latLngBounds => latLng = "getCenter";
+  [@bs.send] external getSouthWest: latLngBounds => latLng = "getSouthWest";
+  [@bs.send] external getNorthEast: latLngBounds => latLng = "getNorthEast";
+  [@bs.send] external getNorthWest: latLngBounds => latLng = "getNorthWest";
+  [@bs.send] external getSouthEast: latLngBounds => latLng = "getSouthEast";
+  [@bs.send] external getWest: latLngBounds => latLng = "getWest";
+  [@bs.send] external getSouth: latLngBounds => latLng = "getSouth";
+  [@bs.send] external getEast: latLngBounds => latLng = "getEast";
+  [@bs.send] external getNorth: latLngBounds => latLng = "getNorth";
 }
 
 and LatLng: {
-  type t = {
-    lat: float,
-    lng: float,
-    alt: option(float),
-  };
-
-  let make: (float, float) => t;
-  let equals: (t, t) => bool;
-  let toString: t => string;
-  let distanceTo: (t, t) => float;
-  let wrap: t => t;
-  let toBounds: (t, float) => LatLngBounds.t;
+  let make: (float, float) => latLng;
+  let equals: (latLng, latLng) => bool;
+  let toString: latLng => string;
+  let distanceTo: (latLng, latLng) => float;
+  let wrap: latLng => latLng;
+  let toBounds: (latLng, float) => latLngBounds;
 } = {
-  type t = {
-    lat: float,
-    lng: float,
-    alt: option(float),
-  };
+  [@bs.module "leaflet"] external make: (float, float) => latLng = "latLng";
 
-  [@bs.module "leaflet"] external make: (float, float) => t = "latLng";
-
-  [@bs.send] external equals: (t, t) => bool = "equals";
-  [@bs.send] external toString: t => string = "toString";
-  [@bs.send] external distanceTo: (t, t) => float = "distanceTo";
-  [@bs.send] external wrap: t => t = "wrap";
-  [@bs.send] external toBounds: (t, float) => LatLngBounds.t = "toBounds";
+  [@bs.send] external equals: (latLng, latLng) => bool = "equals";
+  [@bs.send] external toString: latLng => string = "toString";
+  [@bs.send] external distanceTo: (latLng, latLng) => float = "distanceTo";
+  [@bs.send] external wrap: latLng => latLng = "wrap";
+  [@bs.send] external toBounds: (latLng, float) => latLngBounds = "toBounds";
 }
 
 and Map: {
-  type t;
   type options;
 
   let options:
@@ -163,14 +163,14 @@ and Map: {
       ~boxZoom: bool=?,
       ~doubleClickZoom: bool=?,
       ~dragging: bool=?,
-      /* ~crs: CRS.t=?, */
-      ~center: LatLng.t=?,
+      /* ~crs: cRS=?, */
+      ~center: latLng=?,
       ~zoom: int=?,
       ~minZoom: int=?,
       ~maxZoom: int=?,
-      /* ~layers: array(Layer.t)=?, */
-      ~maxBounds: LatLngBounds.t=?,
-      /* ~renderer: Renderer.t=?, */
+      /* ~layers: array(layer)=?, */
+      ~maxBounds: latLngBounds=?,
+      /* ~renderer: renderer=?, */
       ~inertia: bool=?,
       ~inertiaDeceleration: float=?,
       ~inertiaMaxSpeed: float=?,
@@ -190,36 +190,25 @@ and Map: {
     ) =>
     options;
 
-  module Event: {
-    type t = {
-      [@bs.as "type"]
-      type_: string,
-      target: Map.t,
-    };
-  };
+  let make: (Dom.element, ~options: options=?, unit) => map;
 
-  let make: (Dom.element, ~options: options=?, unit) => t;
+  let setView: (map, latLng, int) => map;
+  let flyTo: (map, latLng, ~zoom: int=?, unit) => map;
+  let flyToBounds: (map, latLngBounds) => map;
+  let stop: map => map;
 
-  let on: (t, [ | `move(Event.t => unit)]) => t;
-
-  let setView: (t, LatLng.t, int) => t;
-  let flyTo: (t, LatLng.t, ~zoom: int=?, unit) => t;
-  let flyToBounds: (t, LatLngBounds.t) => t;
-  let stop: t => t;
-
-  let getCenter: t => LatLng.t;
-  let getZoom: t => int;
-  let getBounds: t => LatLngBounds.t;
-  let getMinZoom: t => int;
-  let getMaxZoom: t => int;
+  let getCenter: map => latLng;
+  let getZoom: map => int;
+  let getBounds: map => latLngBounds;
+  let getMinZoom: map => int;
+  let getMaxZoom: map => int;
   let getBoundsZoom:
-    (t, LatLngBounds.t, ~inside: bool=?, ~padding: Point.t=?, unit) => int;
-  let getSize: t => Point.t;
-  let getPixelBounds: t => Bounds.t;
-  let getPixelOrigin: t => Point.t;
-  let getPixelWorldBounds: (t, ~zoom: int=?, unit) => Bounds.t;
+    (map, latLngBounds, ~inside: bool=?, ~padding: point=?, unit) => int;
+  let getSize: map => point;
+  let getPixelBounds: map => bounds;
+  let getPixelOrigin: map => point;
+  let getPixelWorldBounds: (map, ~zoom: int=?, unit) => bounds;
 } = {
-  type t;
   type options;
 
   [@bs.obj]
@@ -235,14 +224,14 @@ and Map: {
       ~boxZoom: bool=?,
       ~doubleClickZoom: bool=?,
       ~dragging: bool=?,
-      /* ~crs: CRS.t=?, */
-      ~center: LatLng.t=?,
+      /* ~crs: cRS=?, */
+      ~center: latLng=?,
       ~zoom: int=?,
       ~minZoom: int=?,
       ~maxZoom: int=?,
-      /* ~layers: array(Layer.t)=?, */
-      ~maxBounds: LatLngBounds.t=?,
-      /* ~renderer: Renderer.t=?, */
+      /* ~layers: array(layer)=?, */
+      ~maxBounds: latLngBounds=?,
+      /* ~renderer: renderer=?, */
       ~inertia: bool=?,
       ~inertiaDeceleration: float=?,
       ~inertiaMaxSpeed: float=?,
@@ -263,104 +252,71 @@ and Map: {
     options;
 
   [@bs.module "leaflet"]
-  external make: (Dom.element, ~options: options=?, unit) => t = "map";
+  external make: (Dom.element, ~options: options=?, unit) => map = "map";
 
-  module Event = {
-    type t = {
-      [@bs.as "type"]
-      type_: string,
-      target: Map.t,
-    };
-  };
-
+  [@bs.send] external setView: (map, latLng, int) => map = "setView";
   [@bs.send]
-  external on: (t, [@bs.string] [ | `move(Event.t => unit)]) => t = "on";
+  external flyTo: (map, latLng, ~zoom: int=?, unit) => map = "flyTo";
+  [@bs.send] external flyToBounds: (map, latLngBounds) => map = "flyToBounds";
+  [@bs.send] external stop: map => map = "stop";
 
-  [@bs.send] external setView: (t, LatLng.t, int) => t = "setView";
-  [@bs.send] external flyTo: (t, LatLng.t, ~zoom: int=?, unit) => t = "flyTo";
-  [@bs.send] external flyToBounds: (t, LatLngBounds.t) => t = "flyToBounds";
-  [@bs.send] external stop: t => t = "stop";
-
-  [@bs.send] external getCenter: t => LatLng.t = "getCenter";
-  [@bs.send] external getZoom: t => int = "getZoom";
-  [@bs.send] external getBounds: t => LatLngBounds.t = "getBounds";
-  [@bs.send] external getMinZoom: t => int = "getMinZoom";
-  [@bs.send] external getMaxZoom: t => int = "getMaxZoom";
+  [@bs.send] external getCenter: map => latLng = "getCenter";
+  [@bs.send] external getZoom: map => int = "getZoom";
+  [@bs.send] external getBounds: map => latLngBounds = "getBounds";
+  [@bs.send] external getMinZoom: map => int = "getMinZoom";
+  [@bs.send] external getMaxZoom: map => int = "getMaxZoom";
   [@bs.send]
   external getBoundsZoom:
-    (t, LatLngBounds.t, ~inside: bool=?, ~padding: Point.t=?, unit) => int =
+    (map, latLngBounds, ~inside: bool=?, ~padding: point=?, unit) => int =
     "getBoundsZoom";
-  [@bs.send] external getSize: t => Point.t = "getSize";
-  [@bs.send] external getPixelBounds: t => Bounds.t = "getPixelBounds";
-  [@bs.send] external getPixelOrigin: t => Point.t = "getPixelOrigin";
+  [@bs.send] external getSize: map => point = "getSize";
+  [@bs.send] external getPixelBounds: map => bounds = "getPixelBounds";
+  [@bs.send] external getPixelOrigin: map => point = "getPixelOrigin";
   [@bs.send]
-  external getPixelWorldBounds: (t, ~zoom: int=?, unit) => Bounds.t =
+  external getPixelWorldBounds: (map, ~zoom: int=?, unit) => bounds =
     "getPixelWorldBounds";
 }
 
-and Bounds: {
-  type t = {
-    min: Point.t,
-    max: Point.t,
-  };
-
-  let make: (Point.t, Point.t) => t;
-} = {
-  type t = {
-    min: Point.t,
-    max: Point.t,
-  };
-
-  [@bs.module "leaflet"] external make: (Point.t, Point.t) => t = "bounds";
+and Bounds: {let make: (point, point) => bounds;} = {
+  [@bs.module "leaflet"] external make: (point, point) => bounds = "bounds";
 }
 
 and Point: {
-  type t = {
-    x: float,
-    y: float,
-  };
-
-  let make: (float, float) => t;
-  let add: (t, t) => t;
-  let subtract: (t, t) => t;
-  let divideBy: (t, float) => t;
-  let multiplyBy: (t, float) => t;
-  let scaleBy: (t, Point.t) => t;
-  let unscaleBy: (t, Point.t) => t;
-  let round: t => t;
-  let floor: t => t;
-  let ceil: t => t;
-  let trunc: t => t;
-  let distanceTo: (t, Point.t) => t;
-  let equals: (t, Point.t) => t;
-  let contains: (t, Point.t) => t;
-  let toString: t => string;
+  let make: (float, float) => point;
+  let add: (point, point) => point;
+  let subtract: (point, point) => point;
+  let divideBy: (point, float) => point;
+  let multiplyBy: (point, float) => point;
+  let scaleBy: (point, point) => point;
+  let unscaleBy: (point, point) => point;
+  let round: point => point;
+  let floor: point => point;
+  let ceil: point => point;
+  let trunc: point => point;
+  let distanceTo: (point, point) => point;
+  let equals: (point, point) => point;
+  let contains: (point, point) => point;
+  let toString: point => string;
 } = {
-  type t = {
-    x: float,
-    y: float,
-  };
+  [@bs.module "leaflet"] external make: (float, float) => point = "point";
 
-  [@bs.module "leaflet"] external make: (float, float) => t = "point";
-
-  [@bs.send] external add: (t, t) => t = "add";
-  [@bs.send] external subtract: (t, t) => t = "subtract";
-  [@bs.send] external divideBy: (t, float) => t = "divideBy";
-  [@bs.send] external multiplyBy: (t, float) => t = "multiplyBy";
-  [@bs.send] external scaleBy: (t, Point.t) => t = "scaleBy";
-  [@bs.send] external unscaleBy: (t, Point.t) => t = "unscaleBy";
-  [@bs.send] external round: t => t = "round";
-  [@bs.send] external floor: t => t = "floor";
-  [@bs.send] external ceil: t => t = "ceil";
-  [@bs.send] external trunc: t => t = "trunc";
-  [@bs.send] external distanceTo: (t, Point.t) => t = "distanceTo";
-  [@bs.send] external equals: (t, Point.t) => t = "equals";
-  [@bs.send] external contains: (t, Point.t) => t = "contains";
-  [@bs.send] external toString: t => string = "toString";
+  [@bs.send] external add: (point, point) => point = "add";
+  [@bs.send] external subtract: (point, point) => point = "subtract";
+  [@bs.send] external divideBy: (point, float) => point = "divideBy";
+  [@bs.send] external multiplyBy: (point, float) => point = "multiplyBy";
+  [@bs.send] external scaleBy: (point, point) => point = "scaleBy";
+  [@bs.send] external unscaleBy: (point, point) => point = "unscaleBy";
+  [@bs.send] external round: point => point = "round";
+  [@bs.send] external floor: point => point = "floor";
+  [@bs.send] external ceil: point => point = "ceil";
+  [@bs.send] external trunc: point => point = "trunc";
+  [@bs.send] external distanceTo: (point, point) => point = "distanceTo";
+  [@bs.send] external equals: (point, point) => point = "equals";
+  [@bs.send] external contains: (point, point) => point = "contains";
+  [@bs.send] external toString: point => string = "toString";
 }
 
 and Popup: {
-  type t;
   type options;
 
   let options:
@@ -369,36 +325,35 @@ and Popup: {
       ~minWidth: int=?,
       ~maxHeight: int=?,
       ~autoPan: bool=?,
-      ~autoPanPaddingTopLeft: Point.t=?,
-      ~autoPanPaddingBottomRight: Point.t=?,
-      ~autoPanPadding: Point.t=?,
+      ~autoPanPaddingTopLeft: point=?,
+      ~autoPanPaddingBottomRight: point=?,
+      ~autoPanPadding: point=?,
       ~keepInView: bool=?,
       ~closeButton: bool=?,
       ~autoClose: bool=?,
       ~closeOnEscapeKey: bool=?,
       ~closeOnClick: bool=?,
       ~className: string=?,
-      ~offset: Point.t=?,
+      ~offset: point=?,
       ~pane: string=?,
       ~attribution: string=?,
       unit
     ) =>
     options;
 
-  let make: (~options: options=?, unit) => t;
+  let make: (~options: options=?, unit) => popup;
 
-  let getLatLng: t => LatLng.t;
-  let setLatLng: (t, LatLng.t) => t;
-  let getContent: t => Dom.element;
-  let setContent: (t, Dom.element) => t;
-  let getElement: t => Dom.element;
-  let update: t => unit;
-  let bringToFront: t => t;
-  let bringToBack: t => t;
-  let isOpen: t => bool;
-  let openOn: (t, Map.t) => t;
+  let getLatLng: popup => latLng;
+  let setLatLng: (popup, latLng) => popup;
+  let getContent: popup => Dom.element;
+  let setContent: (popup, Dom.element) => popup;
+  let getElement: popup => Dom.element;
+  let update: popup => unit;
+  let bringToFront: popup => popup;
+  let bringToBack: popup => popup;
+  let isOpen: popup => bool;
+  let openOn: (popup, map) => popup;
 } = {
-  type t;
   type options;
 
   [@bs.obj]
@@ -408,16 +363,16 @@ and Popup: {
       ~minWidth: int=?,
       ~maxHeight: int=?,
       ~autoPan: bool=?,
-      ~autoPanPaddingTopLeft: Point.t=?,
-      ~autoPanPaddingBottomRight: Point.t=?,
-      ~autoPanPadding: Point.t=?,
+      ~autoPanPaddingTopLeft: point=?,
+      ~autoPanPaddingBottomRight: point=?,
+      ~autoPanPadding: point=?,
       ~keepInView: bool=?,
       ~closeButton: bool=?,
       ~autoClose: bool=?,
       ~closeOnEscapeKey: bool=?,
       ~closeOnClick: bool=?,
       ~className: string=?,
-      ~offset: Point.t=?,
+      ~offset: point=?,
       ~pane: string=?,
       ~attribution: string=?,
       unit
@@ -425,16 +380,16 @@ and Popup: {
     options;
 
   [@bs.module "leaflet"]
-  external make: (~options: options=?, unit) => t = "popup";
+  external make: (~options: options=?, unit) => popup = "popup";
 
-  [@bs.send] external getLatLng: t => LatLng.t = "getLatLng";
-  [@bs.send] external setLatLng: (t, LatLng.t) => t = "setLatLng";
-  [@bs.send] external getContent: t => Dom.element = "getContent";
-  [@bs.send] external setContent: (t, Dom.element) => t = "setContent";
-  [@bs.send] external getElement: t => Dom.element = "getElement";
-  [@bs.send] external update: t => unit = "update";
-  [@bs.send] external bringToFront: t => t = "bringToFront";
-  [@bs.send] external bringToBack: t => t = "bringToBack";
-  [@bs.send] external isOpen: t => bool = "isOpen";
-  [@bs.send] external openOn: (t, Map.t) => t = "openOn";
+  [@bs.send] external getLatLng: popup => latLng = "getLatLng";
+  [@bs.send] external setLatLng: (popup, latLng) => popup = "setLatLng";
+  [@bs.send] external getContent: popup => Dom.element = "getContent";
+  [@bs.send] external setContent: (popup, Dom.element) => popup = "setContent";
+  [@bs.send] external getElement: popup => Dom.element = "getElement";
+  [@bs.send] external update: popup => unit = "update";
+  [@bs.send] external bringToFront: popup => popup = "bringToFront";
+  [@bs.send] external bringToBack: popup => popup = "bringToBack";
+  [@bs.send] external isOpen: popup => bool = "isOpen";
+  [@bs.send] external openOn: (popup, map) => popup = "openOn";
 };
