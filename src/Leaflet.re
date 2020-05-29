@@ -149,6 +149,46 @@ and LatLng: {
 
 and Map: {
   type t;
+  type options;
+
+  let options:
+    (
+      ~preferCanvas: bool=?,
+      ~attributionControl: bool=?,
+      ~zoomControl: bool=?,
+      ~closePopupOnClick: bool=?,
+      ~zoomSnap: int=?,
+      ~zoomDelta: int=?,
+      ~trackResize: bool=?,
+      ~boxZoom: bool=?,
+      ~doubleClickZoom: bool=?,
+      ~dragging: bool=?,
+      /* ~crs: CRS.t=?, */
+      ~center: LatLng.t=?,
+      ~zoom: int=?,
+      ~minZoom: int=?,
+      ~maxZoom: int=?,
+      /* ~layers: array(Layer.t)=?, */
+      ~maxBounds: LatLngBounds.t=?,
+      /* ~renderer: Renderer.t=?, */
+      ~inertia: bool=?,
+      ~inertiaDeceleration: float=?,
+      ~inertiaMaxSpeed: float=?,
+      ~easeLinearity: float=?,
+      ~worldCopyJump: bool=?,
+      ~maxBoundsViscosity: int=?,
+      ~keyboard: bool=?,
+      ~keyboardPanDelta: int=?,
+      ~scrollWheelZoom: bool=?,
+      ~wheelDebounceTime: int=?,
+      ~wheelPxPerZoomLevel: int=?,
+      ~tap: bool=?,
+      ~tapTolerance: int=?,
+      ~touchZoom: bool=?,
+      ~bounceAtZoomLimits: bool=?,
+      unit
+    ) =>
+    options;
 
   module Event: {
     type t = {
@@ -158,7 +198,7 @@ and Map: {
     };
   };
 
-  let make: Dom.element => t;
+  let make: (Dom.element, ~options: options=?, unit) => t;
 
   let on: (t, [ | `move(Event.t => unit)]) => t;
 
@@ -180,8 +220,50 @@ and Map: {
   let getPixelWorldBounds: (t, ~zoom: int=?, unit) => Bounds.t;
 } = {
   type t;
+  type options;
 
-  [@bs.module "leaflet"] external make: Dom.element => t = "map";
+  [@bs.obj]
+  external options:
+    (
+      ~preferCanvas: bool=?,
+      ~attributionControl: bool=?,
+      ~zoomControl: bool=?,
+      ~closePopupOnClick: bool=?,
+      ~zoomSnap: int=?,
+      ~zoomDelta: int=?,
+      ~trackResize: bool=?,
+      ~boxZoom: bool=?,
+      ~doubleClickZoom: bool=?,
+      ~dragging: bool=?,
+      /* ~crs: CRS.t=?, */
+      ~center: LatLng.t=?,
+      ~zoom: int=?,
+      ~minZoom: int=?,
+      ~maxZoom: int=?,
+      /* ~layers: array(Layer.t)=?, */
+      ~maxBounds: LatLngBounds.t=?,
+      /* ~renderer: Renderer.t=?, */
+      ~inertia: bool=?,
+      ~inertiaDeceleration: float=?,
+      ~inertiaMaxSpeed: float=?,
+      ~easeLinearity: float=?,
+      ~worldCopyJump: bool=?,
+      ~maxBoundsViscosity: int=?,
+      ~keyboard: bool=?,
+      ~keyboardPanDelta: int=?,
+      ~scrollWheelZoom: bool=?,
+      ~wheelDebounceTime: int=?,
+      ~wheelPxPerZoomLevel: int=?,
+      ~tap: bool=?,
+      ~tapTolerance: int=?,
+      ~touchZoom: bool=?,
+      ~bounceAtZoomLimits: bool=?,
+      unit
+    ) =>
+    options;
+
+  [@bs.module "leaflet"]
+  external make: (Dom.element, ~options: options=?, unit) => t = "map";
 
   module Event = {
     type t = {
