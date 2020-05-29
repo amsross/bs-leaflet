@@ -361,8 +361,31 @@ and Point: {
 
 and Popup: {
   type t;
+  type options;
 
-  let make: unit => t;
+  let options:
+    (
+      ~maxWidth: int=?,
+      ~minWidth: int=?,
+      ~maxHeight: int=?,
+      ~autoPan: bool=?,
+      ~autoPanPaddingTopLeft: Point.t=?,
+      ~autoPanPaddingBottomRight: Point.t=?,
+      ~autoPanPadding: Point.t=?,
+      ~keepInView: bool=?,
+      ~closeButton: bool=?,
+      ~autoClose: bool=?,
+      ~closeOnEscapeKey: bool=?,
+      ~closeOnClick: bool=?,
+      ~className: string=?,
+      ~offset: Point.t=?,
+      ~pane: string=?,
+      ~attribution: string=?,
+      unit
+    ) =>
+    options;
+
+  let make: (~options: options=?, unit) => t;
 
   let getLatLng: t => LatLng.t;
   let setLatLng: (t, LatLng.t) => t;
@@ -376,8 +399,33 @@ and Popup: {
   let openOn: (t, Map.t) => t;
 } = {
   type t;
+  type options;
 
-  [@bs.module "leaflet"] external make: unit => t = "popup";
+  [@bs.obj]
+  external options:
+    (
+      ~maxWidth: int=?,
+      ~minWidth: int=?,
+      ~maxHeight: int=?,
+      ~autoPan: bool=?,
+      ~autoPanPaddingTopLeft: Point.t=?,
+      ~autoPanPaddingBottomRight: Point.t=?,
+      ~autoPanPadding: Point.t=?,
+      ~keepInView: bool=?,
+      ~closeButton: bool=?,
+      ~autoClose: bool=?,
+      ~closeOnEscapeKey: bool=?,
+      ~closeOnClick: bool=?,
+      ~className: string=?,
+      ~offset: Point.t=?,
+      ~pane: string=?,
+      ~attribution: string=?,
+      unit
+    ) =>
+    options;
+
+  [@bs.module "leaflet"]
+  external make: (~options: options=?, unit) => t = "popup";
 
   [@bs.send] external getLatLng: t => LatLng.t = "getLatLng";
   [@bs.send] external setLatLng: (t, LatLng.t) => t = "setLatLng";
