@@ -1,0 +1,30 @@
+{
+  "author": "Matt Ross <amsross@gmail.com> (http://www.mattross.io/)",
+  "dependencies": {
+    "leaflet": "^1.6.0"
+  },
+  "devDependencies": {
+    "bs-platform": "^7.3.2",
+    "semantic-release": "^17.0.8"
+  },
+  "keywords": [
+    "bucklescript",
+    "leaflet",
+    "leafletjs",
+    "reason",
+    "reasonml"
+  ],
+  "license": "MIT",
+  "name": "@amsross/bs-leaflet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amsross/bs-leaflet.git"
+  },
+  "scripts": {
+    "build": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "semantic-release": "semantic-release",
+    "start": "bsb -make-world -w"
+  },
+  "version": "0.0.0-development"
+}
