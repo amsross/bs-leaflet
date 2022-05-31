@@ -314,6 +314,7 @@ module Map = {
   @send external flyToBounds: (map, latLngBounds) => map = "flyToBounds"
   @send external stop: map => map = "stop"
   @send external remove: map => map = "remove"
+  @send external locate: map => map = "locate"
 
   @send external getCenter: map => latLng = "getCenter"
   @send external getZoom: map => int = "getZoom"

@@ -276,6 +276,7 @@ module Map: {
   let flyToBounds: (map, latLngBounds) => map
   let stop: map => map
   let remove: map => map
+  let locate: map => map
 
   let getCenter: map => latLng
   let getZoom: map => int
