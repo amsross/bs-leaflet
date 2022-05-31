@@ -313,6 +313,7 @@ module Map = {
   external flyTo: (map, latLng, ~zoom: int=?, unit) => map = "flyTo"
   @send external flyToBounds: (map, latLngBounds) => map = "flyToBounds"
   @send external stop: map => map = "stop"
+  @send external remove: map => map = "remove"
 
   @send external getCenter: map => latLng = "getCenter"
   @send external getZoom: map => int = "getZoom"
