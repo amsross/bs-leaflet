@@ -229,6 +229,48 @@ module Map: {
     ],
   ) => map
 
+  let off: (
+    map,
+    [
+      | #baselayerchange(layers_control_event<map> => unit)
+      | #overlayadd(layers_control_event<map> => unit)
+      | #overlayremove(layers_control_event<map> => unit)
+      | #layeradd(layer_event<map> => unit)
+      | #layerremove(layer_event<map> => unit)
+      | #zoomlevelschange(base_event<map> => unit)
+      | #resize(resize_event<map> => unit)
+      | #unload(base_event<map> => unit)
+      | #viewreset(base_event<map> => unit)
+      | #load(base_event<map> => unit)
+      | #zoomstart(base_event<map> => unit)
+      | #movestart(base_event<map> => unit)
+      | #zoom(base_event<map> => unit)
+      | #move(base_event<map> => unit)
+      | #zoomend(base_event<map> => unit)
+      | #moveend(base_event<map> => unit)
+      | #popupopen(popup_event<map> => unit)
+      | #popupclose(popup_event<map> => unit)
+      | #autopanstart(base_event<map> => unit)
+      | #tooltipopen(tooltip_event<map> => unit)
+      | #tooltipclose(tooltip_event<map> => unit)
+      | #locationerror(error_event<map> => unit)
+      | #locationfound(location_event<map> => unit)
+      | #click(mouse_event<map> => unit)
+      | #dblclick(mouse_event<map> => unit)
+      | #mousedown(mouse_event<map> => unit)
+      | #mouseup(mouse_event<map> => unit)
+      | #mouseover(mouse_event<map> => unit)
+      | #mouseout(mouse_event<map> => unit)
+      | #mousemove(mouse_event<map> => unit)
+      | #contextmenu(mouse_event<map> => unit)
+      | #keypress(keyboard_event<map> => unit)
+      | #keydown(keyboard_event<map> => unit)
+      | #keyup(keyboard_event<map> => unit)
+      | #preclick(mouse_event<map> => unit)
+      | #zoomanim(zoom_anim_event<map> => unit)
+    ],
+  ) => map
+
   let setView: (map, latLng, int) => map
   let flyTo: (map, latLng, ~zoom: int=?, unit) => map
   let flyToBounds: (map, latLngBounds) => map
